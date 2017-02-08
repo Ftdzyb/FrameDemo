@@ -1,0 +1,70 @@
+apply plugin: 'com.android.application'
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def account = properties.getProperty('default_account_str')
+def passWd = properties.getProperty('default_password_str')
+def debugHostUrl = properties.getProperty('default_debug_host_url')
+def releaseHostUrl = properties.getProperty('default_release_host_url')
+def versionNameVal = properties.getProperty('versionName')
+
+android {
+
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+
+    defaultConfig {
+        applicationId "com.test.frame"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.targetSdk
+        versionCode versions.code
+        versionName null == versionNameVal ? versions.name : versionNameVal
+
+        multiDexEnabled true
+        ndk {
+            //设置支持的SO库架构
+            abiFilters 'armeabi'//, 'armeabi-v7a', 'arm64-v8a'//, 'x86', 'x86_64'
+        }
+    }
+
+    signingConfigs {
+        release {
+            v2SigningEnabled false
+            def filePrivateProperties = file("private.properties")
+            if (filePrivateProperties.exists()) {
+                Properties propsPrivate = new Properties()
+                propsPrivate.load(new FileInputStream(filePrivateProperties))
+                storeFile file(propsPrivate['RELEASE_STORE_FILE'])
+                storePassword propsPrivate['RELEASE_STORE_PASSWORD']
+                keyAlias propsPrivate['RELEASE_KEY_ALIAS']
+                keyPassword propsPrivate['RELEASE_KEY_PASSWORD']
+            }
+        }
+    }
+
+
+    buildTypes {
+
+        debug{
+            minifyEnabled false
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            minifyEnabled true
+//            shrinkResources true //移除无用的图片  getResources().getIdentifier(key, “drawable”,getPackageName()));此方法无用
+            signingConfig signingConfigs.release
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile 'com.android.support:appcompat-v7:24.2.1'
+    testCompile 'junit:junit:4.12'
+
+//    compile(name: 'Frame-1.0.22', ext: 'aar')
+}
