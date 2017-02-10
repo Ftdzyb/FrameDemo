@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 Properties properties = new Properties()
 properties.load(project.rootProject.file('local.properties').newDataInputStream())
@@ -65,6 +66,15 @@ dependencies {
 
     compile 'com.android.support:appcompat-v7:24.2.1'
     testCompile 'junit:junit:4.12'
-
+    compile libraries.Frame
 //    compile(name: 'Frame-1.0.22', ext: 'aar')
+
+    //ButterKnife
+    compile libraries.butterknife
+    apt libraries.butterknifeApt
+
+    //memory leakcanary
+//    debugCompile libraries.noOpleakcanary
+//    previewCompile libraries.noOpleakcanary
+//    releaseCompile libraries.noOpleakcanary
 }

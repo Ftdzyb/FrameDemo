@@ -1,4 +1,4 @@
-package com.test.frame.ui.activity;
+package com.test.frame.ui.activity.main;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
